@@ -1,0 +1,37 @@
+name: Cross-Runner Artifact Example
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload-artifact:
+    name: Upload Artifact
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Generate Artifact
+        run: |
+          echo "This is a test artifact" > artifact.txt
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-artifact
+          path: artifact.txt
+
+  download-artifact:
+    name: Download Artifact
+    runs-on: windows-latest
+    needs: upload-artifact
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: test-artifact
+
+      - name: Verify Artifact
+        run: type artifact.txt
